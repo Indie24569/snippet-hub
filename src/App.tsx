@@ -131,12 +131,10 @@ export const App = () => {
     const categoryToUpdate = categories.find(c => c.id === categoryId);
     if (!categoryToUpdate) return;
 
-    // Update category name
     const updatedCategories = categories.map(category => 
       category.id === categoryId ? { ...category, name: newName } : category
     );
 
-    // Update all snippets that belong to this category
     const updatedSnippets = snippets.map(snippet => 
       snippet.category === categoryToUpdate.name 
         ? { ...snippet, category: newName } 

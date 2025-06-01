@@ -55,7 +55,6 @@ export const App = () => {
     localStorage.setItem('categories', JSON.stringify(categories));
   }, [snippets, categories]);
 
-  // Filtering snippets based on selection and pinned status
   const filteredSnippets = selectedCategory
     ? snippets.filter(snippet => snippet.category === selectedCategory)
     : snippets;
@@ -126,6 +125,28 @@ export const App = () => {
     setCategories(categories.filter(c => c.id !== categoryId));
   };
 
+  const handleRenameCategory = (categoryId: string, newName: string) => {
+    if (!newName.trim()) return;
+    
+    const categoryToUpdate = categories.find(c => c.id === categoryId);
+    if (!categoryToUpdate) return;
+
+    // Update category name
+    const updatedCategories = categories.map(category => 
+      category.id === categoryId ? { ...category, name: newName } : category
+    );
+
+    // Update all snippets that belong to this category
+    const updatedSnippets = snippets.map(snippet => 
+      snippet.category === categoryToUpdate.name 
+        ? { ...snippet, category: newName } 
+        : snippet
+    );
+
+    setCategories(updatedCategories);
+    setSnippets(updatedSnippets);
+  };
+
   return (
     <div className="app">
       <Sidebar
@@ -134,6 +155,7 @@ export const App = () => {
         onCategorySelect={setSelectedCategory}
         onAddCategory={handleAddCategory}
         onDeleteCategory={handleDeleteCategory}
+        onRenameCategory={handleRenameCategory}
         onPinnedClick={() => setShowPinned(!showPinned)}
         showPinned={showPinned}
       />
